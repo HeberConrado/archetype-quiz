@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archetype — DEMO PREVIEW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9aa72;
+  --gold-light: #e0c48a;
+  --bg: #0b0b0a;
+  --surface: #111110;
+  --surface2: #181715;
+  --border: #252320;
+  --border2: #332f2a;
+  --text: #f0ece3;
+  --text2: #9a9084;
+  --text3: #5a5448;
+  --text4: #3a3530;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ══════════════════════════════════════
+   WATERMARK SYSTEM — multiple layers
+══════════════════════════════════════ */
+
+/* Layer 1 — diagonal repeating stamp */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 99998; pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 120px,
+    rgba(201,170,114,0.03) 120px,
+    rgba(201,170,114,0.03) 121px
+  );
+}
+
+/* Layer 2 — repeating text watermark grid */
+.wm-grid {
+  position: fixed; inset: 0; z-index: 99997; pointer-events: none;
+  overflow: hidden;
+}
+.wm-grid::before {
+  content: '';
+  position: absolute; inset: -50%;
+  width: 200%; height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='18' fill='rgba(201,170,114,0.07)' transform='rotate(-35 170 100)'%3EDEMO PREVIEW — NOT FOR USE%3C/text%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Layer 3 — center large stamp */
+.wm-center {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  z-index: 99997; pointer-events: none;
+  text-align: center;
+}
+.wm-center-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 300;
+  color: rgba(201,170,114,0.06);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+/* Layer 4 — corner badges */
+.wm-corner {
+  position: fixed; z-index: 99999; pointer-events: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(201,170,114,0.55);
+  background: rgba(11,11,10,0.85);
+  padding: 6px 12px;
+  border: 0.5px solid rgba(201,170,114,0.2);
+}
+.wm-tl { top: 12px; left: 12px; }
+.wm-tr { top: 12px; right: 12px; }
+.wm-bl { bottom: 12px; left: 12px; }
+.wm-br { bottom: 12px; right: 12px; }
+
+/* Layer 5 — top banner */
+.wm-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(201,170,114,0.1);
+  border-bottom: 0.5px solid rgba(201,170,114,0.25);
+  padding: 8px;
+  text-align: center;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════════ */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════════
+   LANDING
+══════════════════════════════════════ */
+#s-landing {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1.5rem 3rem;
+  text-align: center;
+  position: relative;
+}
+
+.landing-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 55% at 50% 55%, #1a160a 0%, transparent 70%);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.landing-eyebrow {
+  font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 2rem; font-weight: 400;
+  animation: fadeUp 0.8s ease both;
+  position: relative; z-index: 1;
+}
+
+.landing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 9vw, 6rem);
+  font-weight: 300; line-height: 1.05;
+  color: var(--text); margin-bottom: 1.5rem;
+  animation: fadeUp 0.8s 0.1s ease both;
+  position: relative; z-index: 1;
+}
+.landing-title em { font-style: italic; color: var(--gold); }
+
+.landing-desc {
+  font-size: 15px; color: var(--text2); line-height: 1.8;
+  max-width: 400px; margin: 0 auto 3rem;
+  animation: fadeUp 0.8s 0.2s ease both;
+  position: relative; z-index: 1;
+}
+
+.landing-meta {
+  display: flex; gap: 3rem; justify-content: center;
+  margin-bottom: 3rem;
+  animation: fadeUp 0.8s 0.3s ease both;
+  position: relative; z-index: 1;
+}
+
+.meta-item { text-align: center; }
+.meta-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem; font-weight: 300; color: var(--gold); display: block;
+}
+.meta-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+
+.landing-divider {
+  width: 40px; height: 0.5px; background: var(--border2);
+  margin: 0 auto 3rem;
+  animation: fadeUp 0.8s 0.35s ease both;
+  position: relative; z-index: 1;
+}
+
+.btn-cta {
+  display: inline-block; background: var(--gold); color: #0b0b0a;
+  padding: 16px 52px; font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.15em;
+  text-transform: uppercase; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  animation: fadeUp 0.8s 0.4s ease both;
+  position: relative; z-index: 1;
+}
+.btn-cta:hover { background: var(--gold-light); }
+.btn-cta:active { transform: scale(0.98); }
+
+.landing-note {
+  margin-top: 1.2rem; font-size: 12px; color: var(--text4);
+  animation: fadeUp 0.8s 0.5s ease both;
+  position: relative; z-index: 1;
+}
+
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+#s-quiz { flex-direction: column; align-items: center; padding: 4.5rem 1.5rem 3rem; }
+
+.quiz-wrap { width: 100%; max-width: 580px; }
+
+.quiz-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2.5rem;
+}
+
+.quiz-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 300; color: var(--text2);
+  letter-spacing: 0.05em;
+}
+.quiz-logo em { color: var(--gold); font-style: italic; }
+
+.quiz-progress-label {
+  font-size: 11px; color: var(--text3); letter-spacing: 0.1em;
+}
+
+.progress-track {
+  height: 1px; background: var(--border); margin-bottom: 3.5rem; position: relative;
+}
+.progress-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--gold); transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.progress-dot {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+  transition: left 0.5s cubic-bezier(0.4,0,0.2,1);
+  margin-left: -3px;
+}
+
+.q-eyebrow {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+}
+
+.q-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 300; line-height: 1.4;
+  color: var(--text); margin-bottom: 3rem; min-height: 90px;
+}
+
+.scale-ends {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text3); letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.scale-row {
+  display: flex; gap: 10px; margin-bottom: 3rem;
+}
+
+.scale-btn {
+  flex: 1; padding: 18px 0;
+  border: 0.5px solid var(--border);
+  background: transparent; color: var(--text3);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.scale-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,170,114,0.04); }
+.scale-btn.sel { background: var(--gold); border-color: var(--gold); color: #0b0b0a; font-weight: 500; }
+
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.btn-ghost {
+  background: transparent; border: 0.5px solid var(--border);
+  color: var(--text3); padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-ghost:hover:not(:disabled) { border-color: var(--border2); color: var(--text2); }
+.btn-ghost:disabled { opacity: 0.25; cursor: default; }
+
+.btn-next {
+  background: var(--gold); color: #0b0b0a; border: none;
+  padding: 12px 28px; font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+}
+.btn-next:disabled { opacity: 0.3; cursor: default; background: var(--border2); color: var(--text3); }
+.btn-next:not(:disabled):hover { background: var(--gold-light); }
+
+/* ══════════════════════════════════════
+   BASIC RESULT (free / locked)
+══════════════════════════════════════ */
+#s-result { flex-direction: column; align-items: center; padding: 4.5rem 1.5rem 3rem; }
+
+.result-wrap { width: 100%; max-width: 560px; }
+
+.result-eyebrow {
+  font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem;
+}
+
+.result-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  font-weight: 300; line-height: 1; margin-bottom: 0.5rem;
+}
+.result-name em { font-style: italic; color: var(--gold); }
+
+.result-match {
+  font-size: 13px; color: var(--text3); margin-bottom: 2.5rem; letter-spacing: 0.04em;
+}
+
+.result-divider { height: 0.5px; background: var(--border); margin-bottom: 2.5rem; }
+
+.teaser-label {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 1rem;
+}
+
+.teaser-card {
+  border: 0.5px solid var(--border); padding: 1.75rem;
+  margin-bottom: 2rem; position: relative; overflow: hidden;
+}
+
+.teaser-text {
+  font-size: 14px; color: var(--text2); line-height: 1.85;
+}
+
+.teaser-fade {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 70%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+}
+
+.lock-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.lock-pill {
+  display: flex; align-items: center; gap: 8px;
+  border: 0.5px solid var(--border2); padding: 10px 16px;
+  font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+.lock-icon {
+  width: 12px; height: 13px; position: relative;
+  border: 1.5px solid currentColor; border-radius: 1px; margin-top: 3px;
+}
+.lock-icon::before {
+  content: ''; position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 7px;
+  border: 1.5px solid currentColor; border-bottom: none; border-radius: 4px 4px 0 0;
+}
+
+.unlock-box {
+  background: var(--surface); border: 0.5px solid var(--border2);
+  padding: 2rem; margin-bottom: 1.5rem;
+}
+
+.unlock-price-row {
+  display: flex; align-items: baseline; gap: 10px; margin-bottom: 0.4rem;
+}
+.unlock-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem; font-weight: 300; color: var(--text);
+}
+.unlock-currency { font-size: 14px; color: var(--text3); }
+
+.unlock-includes {
+  font-size: 12px; color: var(--text3); margin-bottom: 1.75rem; line-height: 1.7;
+}
+.unlock-includes span { color: var(--text2); }
+
+.btn-unlock {
+  display: block; width: 100%; background: var(--gold); color: #0b0b0a;
+  padding: 16px; font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s;
+}
+.btn-unlock:hover { background: var(--gold-light); }
+
+.result-retake {
+  text-align: center; margin-top: 1rem;
+  font-size: 12px; color: var(--text4); cursor: pointer;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  transition: color 0.15s;
+}
+.result-retake:hover { color: var(--text2); }
+
+/* ══════════════════════════════════════
+   STRIPE CHECKOUT MODAL
+══════════════════════════════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9990;
+  background: rgba(0,0,0,0.75);
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: #111110; border: 0.5px solid var(--border2);
+  width: 100%; max-width: 420px;
+  animation: fadeUp 0.3s ease both;
+}
+
+.modal-header {
+  padding: 1.5rem 1.75rem; border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.modal-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; color: var(--text);
+}
+.modal-brand em { color: var(--gold); font-style: italic; }
+
+.modal-close {
+  background: none; border: none; color: var(--text3);
+  font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-body { padding: 1.75rem; }
+
+.modal-product {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 1.25rem; margin-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--border);
+}
+.modal-product-name { font-size: 14px; color: var(--text2); }
+.modal-product-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 300; color: var(--text);
+}
+
+.stripe-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--text3); letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+}
+.stripe-logo {
+  background: #635BFF; color: white; font-size: 8px; font-weight: 700;
+  padding: 2px 5px; letter-spacing: 0.05em;
+}
+
+.form-field { margin-bottom: 1rem; }
+.form-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%; background: var(--bg); border: 0.5px solid var(--border2);
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+  padding: 12px 14px; outline: none; transition: border-color 0.15s;
+}
+.form-input:focus { border-color: var(--gold); }
+.form-input::placeholder { color: var(--text4); }
+
+.form-row { display: flex; gap: 12px; }
+.form-row .form-field { flex: 1; }
+
+.btn-pay {
+  width: 100%; background: var(--gold); color: #0b0b0a;
+  padding: 15px; font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; border: none; cursor: pointer;
+  margin-top: 0.5rem; transition: background 0.2s;
+}
+.btn-pay:hover { background: var(--gold-light); }
+
+.form-secure {
+  text-align: center; font-size: 10px; color: var(--text4);
+  margin-top: 0.75rem; letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════════
+   FULL RESULTS (paid)
+══════════════════════════════════════ */
+#s-paid { flex-direction: column; align-items: center; padding: 4.5rem 1.5rem 5rem; }
+
+.paid-wrap { width: 100%; max-width: 620px; }
+
+.paid-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 0.5px solid rgba(201,170,114,0.3);
+  padding: 8px 16px; margin-bottom: 2rem;
+  font-size: 10px; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+.paid-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  font-weight: 300; line-height: 1; margin-bottom: 0.5rem;
+}
+.paid-title em { font-style: italic; color: var(--gold); }
+
+.paid-sub { font-size: 13px; color: var(--text3); margin-bottom: 3rem; letter-spacing: 0.04em; }
+
+.ornament { color: var(--border2); letter-spacing: 0.4em; text-align: center; margin: 2.5rem 0; font-size: 0.9rem; }
+
+/* Distribution bars */
+.dist-section { margin-bottom: 3rem; }
+.section-label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 1.5rem; display: block;
+}
+
+.dist-item { margin-bottom: 1.25rem; }
+.dist-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.dist-name { font-size: 13px; color: var(--text2); }
+.dist-pct { font-size: 13px; color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+.dist-track { height: 1px; background: var(--border); position: relative; }
+.dist-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gold); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+/* Detail sections */
+.detail-block { margin-bottom: 2.5rem; }
+.detail-label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 1rem; display: block;
+  padding-bottom: 0.75rem; border-bottom: 0.5px solid var(--border);
+}
+.detail-text { font-size: 14px; color: var(--text2); line-height: 1.85; }
+
+.tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  border: 0.5px solid var(--border); padding: 7px 16px;
+  font-size: 12px; color: var(--text3); letter-spacing: 0.04em;
+}
+.tag.pos { border-color: rgba(201,170,114,0.4); color: var(--gold); }
+.tag.neg { border-color: var(--border); color: var(--text4); }
+
+.secondary-card {
+  border: 0.5px solid var(--border); padding: 1.5rem; margin-bottom: 1rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.sc-rank {
+  font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+  font-weight: 300; color: var(--border2); line-height: 1; min-width: 32px;
+}
+.sc-name { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
+.sc-pct { font-size: 12px; color: var(--text3); }
+
+.paid-footer {
+  margin-top: 3rem; padding-top: 2rem; border-top: 0.5px solid var(--border);
+  text-align: center;
+}
+.paid-footer-text { font-size: 13px; color: var(--text3); line-height: 1.7; margin-bottom: 1.5rem; }
+
+/* ══════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════ */
+#s-admin { flex-direction: column; padding: 0; }
+
+.admin-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem; background: var(--surface); border-bottom: 0.5px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.admin-brand {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  color: var(--text2);
+}
+.admin-brand em { color: var(--gold); font-style: italic; }
+
+.admin-tabs { display: flex; gap: 0; }
+.admin-tab {
+  padding: 8px 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.admin-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.admin-body { padding: 2rem; flex: 1; max-width: 960px; width: 100%; margin: 0 auto; }
+
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px; background: var(--border); margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: var(--bg); padding: 1.5rem;
+}
+.stat-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem; font-weight: 300; color: var(--text); display: block;
+}
+.stat-label { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+.stat-delta { font-size: 11px; color: #4caf82; margin-top: 6px; }
+
+.table-label {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 1rem; display: block;
+}
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  text-align: left; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); padding: 10px 14px; border-bottom: 0.5px solid var(--border);
+  font-weight: 400;
+}
+.data-table td {
+  padding: 12px 14px; font-size: 13px; color: var(--text2);
+  border-bottom: 0.5px solid var(--border);
+}
+.data-table tr:hover td { background: var(--surface); }
+.data-table .badge {
+  display: inline-block; padding: 3px 10px; font-size: 10px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.badge-paid { background: rgba(76,175,130,0.1); color: #4caf82; }
+.badge-free { background: rgba(90,84,72,0.2); color: var(--text3); }
+
+.admin-back {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200;
+  background: var(--surface); border: 0.5px solid var(--border2);
+  color: var(--text3); padding: 10px 18px; font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.admin-back:hover { color: var(--text); border-color: var(--text3); }
+
+/* ══════════════════════════════════════
+   MOBILE
+══════════════════════════════════════ */
+@media (max-width: 500px) {
+  .landing-meta { gap: 1.5rem; }
+  .scale-row { gap: 6px; }
+  .scale-btn { padding: 14px 0; font-size: 14px; }
+  .form-row { flex-direction: column; gap: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ WATERMARK LAYERS ══ -->
+<div class="wm-grid"></div>
+<div class="wm-center">
+  <div class="wm-center-text">Demo Preview</div>
+  <div class="wm-center-text" style="font-size: clamp(1rem, 3vw, 1.8rem); color: rgba(201,170,114,0.05);">Not for use without payment</div>
+</div>
+<div class="wm-banner">⚠ Demo Preview — Not for commercial use — Property of the developer</div>
+<div class="wm-corner wm-tl">Demo Only</div>
+<div class="wm-corner wm-tr">© Developer</div>
+<div class="wm-corner wm-bl">Not for use</div>
+<div class="wm-corner wm-br">Unpaid Preview</div>
+
+<!-- ══ STRIPE MODAL ══ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-brand"><em>Archetype</em> — Checkout</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-product">
+        <div class="modal-product-name">Full Archetype Analysis</div>
+        <div class="modal-product-price">$9.00</div>
+      </div>
+      <div class="stripe-badge">
+        <span class="stripe-logo">stripe</span>
+        Secured by Stripe
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email address</label>
+        <input class="form-input" type="email" placeholder="you@example.com" id="pay-email">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Card number</label>
+        <input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="card-num" oninput="fmtCard(this)">
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Expiry</label>
+          <input class="form-input" type="text" placeholder="MM / YY" maxlength="7" id="card-exp" oninput="fmtExp(this)">
+        </div>
+        <div class="form-field">
+          <label class="form-label">CVC</label>
+          <input class="form-input" type="text" placeholder="123" maxlength="3">
+        </div>
+      </div>
+      <button class="btn-pay" onclick="processPay()">Pay $9.00 — Unlock Results</button>
+      <div class="form-secure">🔒 256-bit SSL encryption · No data stored</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — LANDING
+══════════════════════════════════════ -->
+<div id="s-landing" class="screen active">
+  <div class="landing-bg"></div>
+
+  <div class="landing-eyebrow">Archetype Discovery</div>
+
+  <h1 class="landing-title">
+    Who are you<br><em>beneath</em> the surface?
+  </h1>
+
+  <p class="landing-desc">
+    A research-backed quiz that maps your dominant archetype — revealing how you think, lead, create, and relate to others.
+  </p>
+
+  <div class="landing-meta">
+    <div class="meta-item">
+      <span class="meta-num">28</span>
+      <span class="meta-label">Questions</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-num">5</span>
+      <span class="meta-label">Minutes</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-num">8</span>
+      <span class="meta-label">Archetypes</span>
+    </div>
+  </div>
+
+  <div class="landing-divider"></div>
+
+  <button class="btn-cta" onclick="goQuiz()">Begin the Quiz</button>
+  <div class="landing-note">Free to take · Unlock full results for $9</div>
+
+  <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;gap:1.5rem;">
+    <span style="font-size:10px;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;" onclick="showAdmin()">Admin ↗</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — QUIZ
+══════════════════════════════════════ -->
+<div id="s-quiz" class="screen">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <div class="quiz-logo"><em>Archetype</em></div>
+      <div class="quiz-progress-label" id="q-label">1 / 8</div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+      <div class="progress-dot" id="prog-dot" style="left:0%"></div>
+    </div>
+
+    <div class="q-eyebrow" id="q-cat">Self-Perception</div>
+    <div class="q-text" id="q-body"></div>
+
+    <div class="scale-ends">
+      <span>Strongly disagree</span>
+      <span>Strongly agree</span>
+    </div>
+    <div class="scale-row" id="scale-row">
+      <button class="scale-btn" onclick="pick(1)">1</button>
+      <button class="scale-btn" onclick="pick(2)">2</button>
+      <button class="scale-btn" onclick="pick(3)">3</button>
+      <button class="scale-btn" onclick="pick(4)">4</button>
+      <button class="scale-btn" onclick="pick(5)">5</button>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-ghost" id="btn-back" onclick="prevQ()" disabled>← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — BASIC RESULT (locked)
+══════════════════════════════════════ -->
+<div id="s-result" class="screen">
+  <div class="result-wrap">
+    <div class="result-eyebrow">Your Archetype</div>
+    <div class="result-name" id="r-name">The <em>Creator</em></div>
+    <div class="result-match" id="r-match">Dominant archetype · High expression</div>
+    <div class="result-divider"></div>
+
+    <div class="teaser-label">A glimpse into your profile</div>
+    <div class="teaser-card">
+      <div class="teaser-text" id="r-teaser"></div>
+      <div class="teaser-fade"></div>
+    </div>
+
+    <div class="lock-row">
+      <div class="lock-pill">
+        <div class="lock-icon"></div>
+        Full results locked
+      </div>
+    </div>
+
+    <div class="unlock-box">
+      <div class="unlock-price-row">
+        <span class="unlock-price">$9</span>
+        <span class="unlock-currency">USD · one-time</span>
+      </div>
+      <div class="unlock-includes">
+        Includes: <span>Full archetype description</span> · <span>Trait distribution (%)</span> · <span>Secondary & tertiary layers</span> · <span>Strengths & blind spots</span>
+      </div>
+      <button class="btn-unlock" onclick="openModal()">Unlock Full Results →</button>
+    </div>
+
+    <div class="result-retake" onclick="goQuiz()">↩ Retake the quiz</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4 — FULL RESULTS (paid)
+══════════════════════════════════════ -->
+<div id="s-paid" class="screen">
+  <div class="paid-wrap">
+    <div class="paid-badge">✦ Full Analysis Unlocked</div>
+
+    <div class="paid-title">The <em>Creator</em></div>
+    <div class="paid-sub">Primary archetype · Expression level: High · 68% dominant match</div>
+
+    <div class="ornament">· · ·</div>
+
+    <!-- Distribution -->
+    <div class="dist-section">
+      <span class="section-label">Archetype Distribution</span>
+      <div class="dist-item">
+        <div class="dist-top"><span class="dist-name">Creator</span><span class="dist-pct">68%</span></div>
+        <div class="dist-track"><div class="dist-fill" data-w="68"></div></div>
+      </div>
+      <div class="dist-item">
+        <div class="dist-top"><span class="dist-name">Strategist</span><span class="dist-pct">16%</span></div>
+        <div class="dist-track"><div class="dist-fill" data-w="16"></div></div>
+      </div>
+      <div class="dist-item">
+        <div class="dist-top"><span class="dist-name">Guardian</span><span class="dist-pct">10%</span></div>
+        <div class="dist-track"><div class="dist-fill" data-w="10"></div></div>
+      </div>
+      <div class="dist-item">
+        <div class="dist-top"><span class="dist-name">Sovereign</span><span class="dist-pct">6%</span></div>
+        <div class="dist-track"><div class="dist-fill" data-w="6"></div></div>
+      </div>
+    </div>
+
+    <div class="result-divider"></div>
+
+    <!-- Description -->
+    <div class="detail-block">
+      <span class="detail-label">Archetype Description</span>
+      <p class="detail-text">
+        The Creator exists to give form to what does not yet exist. You don't merely solve problems — you reimagine them entirely. Your intelligence is both deeply aesthetic and deeply systemic, producing a rare combination of vision and execution that few people share. You function best when given creative autonomy paired with a clear sense of purpose. Without it, you either stall or overextend into too many directions at once.
+      </p>
+    </div>
+
+    <!-- Strengths -->
+    <div class="detail-block">
+      <span class="detail-label">Strengths</span>
+      <div class="tag-grid">
+        <span class="tag pos">Systems thinking</span>
+        <span class="tag pos">Originality</span>
+        <span class="tag pos">Ambiguity tolerance</span>
+        <span class="tag pos">Visionary leadership</span>
+        <span class="tag pos">Cross-domain synthesis</span>
+      </div>
+    </div>
+
+    <!-- Blind spots -->
+    <div class="detail-block">
+      <span class="detail-label">Blind Spots</span>
+      <div class="tag-grid">
+        <span class="tag neg">Paralyzing perfectionism</span>
+        <span class="tag neg">Difficulty delegating</span>
+        <span class="tag neg">Overcommitment</span>
+        <span class="tag neg">Underestimating execution</span>
+      </div>
+    </div>
+
+    <!-- Secondary archetypes -->
+    <div class="detail-block">
+      <span class="detail-label">Secondary Layers</span>
+      <div class="secondary-card">
+        <div class="sc-rank">2</div>
+        <div>
+          <div class="sc-name">The Strategist</div>
+          <div class="sc-pct">16% expression · Influences your planning and risk assessment instincts</div>
+        </div>
+      </div>
+      <div class="secondary-card">
+        <div class="sc-rank">3</div>
+        <div>
+          <div class="sc-name">The Guardian</div>
+          <div class="sc-pct">10% expression · Shapes how you protect what you've built and who you trust</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional written content placeholder -->
+    <div class="detail-block">
+      <span class="detail-label">In Relationships & Work</span>
+      <p class="detail-text">
+        In collaborative environments, you often become the initiator — the one who sees the possibility before others do and starts moving toward it. This is a gift, but it can lead to friction when others aren't ready to follow your pace. You work best with Strategists and Guardians who can operationalize your vision without stifling it. Avoid environments that reward conformity over contribution.
+      </p>
+    </div>
+
+    <div class="paid-footer">
+      <p class="paid-footer-text">Save or share your results. Your full report has been sent to your email.</p>
+      <button class="btn-ghost" onclick="goLanding()" style="margin-right:12px;">← Back to Home</button>
+      <button class="btn-cta" onclick="window.print()" style="font-size:11px;padding:13px 28px;">Save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 5 — ADMIN
+══════════════════════════════════════ -->
+<div id="s-admin" class="screen" style="flex-direction:column;">
+  <div class="admin-nav">
+    <div class="admin-brand"><em>Archetype</em> Admin</div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="adminTab(this,'overview')">Overview</button>
+      <button class="admin-tab" onclick="adminTab(this,'purchases')">Purchases</button>
+      <button class="admin-tab" onclick="adminTab(this,'responses')">Responses</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- OVERVIEW TAB -->
+    <div id="tab-overview">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value">1,284</span>
+          <span class="stat-label">Total Quizzes Taken</span>
+          <div class="stat-delta">↑ +43 this week</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">317</span>
+          <span class="stat-label">Paid Unlocks</span>
+          <div class="stat-delta">↑ +12 this week</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">24.7%</span>
+          <span class="stat-label">Conversion Rate</span>
+          <div class="stat-delta">↑ +1.2% vs last week</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">$2,853</span>
+          <span class="stat-label">Total Revenue</span>
+          <div class="stat-delta">↑ +$108 this week</div>
+        </div>
+      </div>
+
+      <span class="table-label">Archetype Distribution (all users)</span>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Archetype</th>
+            <th>Count</th>
+            <th>Share</th>
+            <th>Paid</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Creator</td><td>342</td><td>26.6%</td><td>89</td></tr>
+          <tr><td>Strategist</td><td>287</td><td>22.4%</td><td>71</td></tr>
+          <tr><td>Sovereign</td><td>198</td><td>15.4%</td><td>54</td></tr>
+          <tr><td>Caregiver</td><td>179</td><td>13.9%</td><td>44</td></tr>
+          <tr><td>Guardian</td><td>144</td><td>11.2%</td><td>35</td></tr>
+          <tr><td>Explorer</td><td>87</td><td>6.8%</td><td>18</td></tr>
+          <tr><td>Sage</td><td>47</td><td>3.7%</td><td>6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PURCHASES TAB -->
+    <div id="tab-purchases" style="display:none;">
+      <span class="table-label">Recent Purchases</span>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Email</th>
+            <th>Archetype</th>
+            <th>Amount</th>
+            <th>Source</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Apr 27, 2026</td><td>j.miller@gmail.com</td><td>Creator</td><td>$9.00</td><td>instagram</td><td><span class="badge badge-paid">Paid</span></td></tr>
+          <tr><td>Apr 27, 2026</td><td>sarah.k@icloud.com</td><td>Strategist</td><td>$9.00</td><td>direct</td><td><span class="badge badge-paid">Paid</span></td></tr>
+          <tr><td>Apr 26, 2026</td><td>tom.reed@outlook.com</td><td>Guardian</td><td>$9.00</td><td>tiktok</td><td><span class="badge badge-paid">Paid</span></td></tr>
+          <tr><td>Apr 26, 2026</td><td>amara.l@gmail.com</td><td>Caregiver</td><td>$9.00</td><td>instagram</td><td><span class="badge badge-paid">Paid</span></td></tr>
+          <tr><td>Apr 25, 2026</td><td>dev.n@yahoo.com</td><td>Sovereign</td><td>$9.00</td><td>direct</td><td><span class="badge badge-paid">Paid</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RESPONSES TAB -->
+    <div id="tab-responses" style="display:none;">
+      <span class="table-label">Recent Quiz Completions</span>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Archetype</th>
+            <th>Source</th>
+            <th>Unlocked</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Apr 27, 11:42</td><td>Creator</td><td>instagram</td><td><span class="badge badge-paid">Yes</span></td></tr>
+          <tr><td>Apr 27, 10:18</td><td>Explorer</td><td>direct</td><td><span class="badge badge-free">No</span></td></tr>
+          <tr><td>Apr 27, 09:55</td><td>Strategist</td><td>tiktok</td><td><span class="badge badge-paid">Yes</span></td></tr>
+          <tr><td>Apr 27, 08:30</td><td>Caregiver</td><td>instagram</td><td><span class="badge badge-free">No</span></td></tr>
+          <tr><td>Apr 26, 22:14</td><td>Guardian</td><td>direct</td><td><span class="badge badge-paid">Yes</span></td></tr>
+          <tr><td>Apr 26, 20:07</td><td>Sovereign</td><td>tiktok</td><td><span class="badge badge-free">No</span></td></tr>
+          <tr><td>Apr 26, 18:53</td><td>Creator</td><td>instagram</td><td><span class="badge badge-paid">Yes</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="admin-back" onclick="goLanding()">← Exit Admin</button>
+</div>
+
+<script>
+/* ══ DATA ══ */
+const questions = [
+  { cat: "Self-Perception", text: "I prefer to invent new solutions rather than follow established processes." , dim: "creator" },
+  { cat: "Self-Perception", text: "I feel energized when I have the freedom to make decisions without needing to justify them.", dim: "sovereign" },
+  { cat: "Thinking Style", text: "I often notice patterns or connections that others around me miss.", dim: "creator" },
+  { cat: "Motivation", text: "My deepest satisfaction comes from helping others grow and succeed.", dim: "caregiver" },
+  { cat: "Thinking Style", text: "I prefer to fully understand a system before taking action, even if it takes more time.", dim: "strategist" },
+  { cat: "Leadership", text: "I find it natural to inspire others with a compelling vision of what could be.", dim: "sovereign" },
+  { cat: "Motivation", text: "I feel a strong pull toward protecting and caring for those I am responsible for.", dim: "caregiver" },
+  { cat: "Thinking Style", text: "When I face a complex problem, my first instinct is to map out all variables before moving.", dim: "strategist" },
+];
+
+const archetypes = {
+  creator:    { name: "The Creator",    teaser: "You are driven by a deep need to give form to the world around you. Where others see chaos, you see possibility. Your mind operates in layers — processing visually, emotionally, and strategically all at once. This makes you rare, but also places you at the center of a constant tension: the gap between what you imagine and what you manage to bring to life. Your work is never truly finished in your own eyes — but that relentless refinement is also the source of everything original you've ever produced." },
+  sovereign:  { name: "The Sovereign",  teaser: "You carry a quiet authority that others sense before you say a word. Leadership for you isn't a role — it's a natural orientation toward responsibility and decision-making. You think in terms of legacy, outcomes, and structures that outlast any individual effort. At your best, you create environments where others can do their finest work. At your edge, the weight of ownership can become isolation." },
+  caregiver:  { name: "The Caregiver",  teaser: "Connection is your native language. You read rooms and people with an accuracy that feels almost involuntary — and your most meaningful moments are the ones where someone you care about becomes more fully themselves because of time spent with you. You give generously, sometimes before you've checked whether you have enough left for yourself." },
+  strategist: { name: "The Strategist", teaser: "You are a natural navigator of complexity. While others react, you pause, scan, and map. Your decisions are rarely impulsive — they're the product of a mind that finds genuine pleasure in understanding how systems work and where leverage lies. You are often the person in the room who sees three moves ahead, though you've learned to choose carefully when to say so." },
+};
+
+/* ══ STATE ══ */
+let cur = 0, ans = {}, scores = {};
+
+/* ══ NAVIGATION ══ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goLanding() { showScreen('s-landing'); }
+function showAdmin() { showScreen('s-admin'); }
+
+/* ══ QUIZ ══ */
+function goQuiz() {
+  cur = 0; ans = {}; scores = {};
+  showScreen('s-quiz');
+  renderQ();
+}
+
+function renderQ() {
+  const q = questions[cur];
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-body').textContent = q.text;
+  document.getElementById('q-label').textContent = `${cur + 1} / ${questions.length}`;
+
+  const pct = (cur / questions.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-dot').style.left = pct + '%';
+
+  const val = ans[cur];
+  document.querySelectorAll('.scale-btn').forEach((b, i) => b.classList.toggle('sel', val === i + 1));
+  document.getElementById('btn-back').disabled = cur === 0;
+  document.getElementById('btn-next').disabled = val === undefined;
+  document.getElementById('btn-next').textContent = cur === questions.length - 1 ? 'See My Results →' : 'Next →';
+}
+
+function pick(v) {
+  ans[cur] = v;
+  document.querySelectorAll('.scale-btn').forEach((b, i) => b.classList.toggle('sel', i + 1 === v));
+  document.getElementById('btn-next').disabled = false;
+}
+
+function prevQ() { if (cur > 0) { cur--; renderQ(); } }
+
+function nextQ() {
+  if (ans[cur] === undefined) return;
+  scores[questions[cur].dim] = (scores[questions[cur].dim] || 0) + ans[cur];
+  if (cur < questions.length - 1) { cur++; renderQ(); }
+  else { showResult(); }
+}
+
+/* ══ RESULT ══ */
+function showResult() {
+  const dims = Object.keys(scores);
+  const top = dims.length ? dims.reduce((a, b) => scores[a] > scores[b] ? a : b) : 'creator';
+  const arch = archetypes[top] || archetypes.creator;
+  const parts = arch.name.split(' ');
+
+  document.getElementById('r-name').innerHTML = parts[0] + ' <em>' + parts.slice(1).join(' ') + '</em>';
+  document.getElementById('r-match').textContent = `Dominant archetype · Based on ${questions.length} responses`;
+  document.getElementById('r-teaser').textContent = arch.teaser;
+
+  showScreen('s-result');
+}
+
+/* ══ MODAL / PAYMENT ══ */
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function fmtCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExp(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2);
+  el.value = v;
+}
+
+function processPay() {
+  const email = document.getElementById('pay-email').value;
+  const card = document.getElementById('card-num').value;
+  if (!email || !card || card.replace(/\s/g,'').length < 16) {
+    alert('Please fill in all payment details.');
+    return;
+  }
+  closeModal();
+  showScreen('s-paid');
+  setTimeout(() => {
+    document.querySelectorAll('.dist-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 150);
+}
+
+/* ══ ADMIN TABS ══ */
+function adminTab(btn, id) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['overview','purchases','responses'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === id ? 'block' : 'none';
+  });
+}
+
+/* ══ DISABLE RIGHT CLICK & DEV TOOLS SHORTCUTS ══ */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
+    e.preventDefault();
+  }
+});
+</script>
+</body>
+</html>
